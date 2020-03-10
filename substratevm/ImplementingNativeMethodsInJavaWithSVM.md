@@ -12,9 +12,9 @@ read the documentation about [Substrate VM JNI support](JNI.md) instead.
 
 ## Create a Shared Library
 
-First of all one has to use the `native-image` command to generate a shared library
+First of all one needs a Java class compiled to bytecode. Afterwards, the `native-image` command is used to generate a shared library
 with some JNI-compatible [entry points](README.md#images-and-entry-points).
-Let's start with the Java code:
+Let's start with the Java code in `org/pkg/implnative/NativeImpl.java`:
 ```java
 package org.pkg.implnative;
 
@@ -36,9 +36,10 @@ is a reference to `JNIEnv*` value, the second parameter is a reference
 to the `jclass` value for the class declaring the method. The third parameter is a
 portable (e.g. `long`) identifier of the [SubstrateVM isolatethread](C-API.md).
 The rest of the parameters are the actual parameters of the Java `Native.add`
-method described in the next section. Compile the code with shared option on:
+method described in the next section. Assuming that the current directory contains
+the `org` directory, compile the code with shared option on:
 ```bash
-$GRAALVM/bin/native-image --shared -H:Name=libnativeimpl -cp nativeimpl
+$GRAALVM/bin/native-image --shared -H:Name=libnativeimpl -cp .
 ```
 and the `libnativeimpl.so` is generated. We are ready to use it from standard
 Java code.
